@@ -10,8 +10,8 @@ let byteCount = [];
 let timeArray = [];
 
 
-const bytesPerSec = byteCountArray => { 
-    const totalBytes = byteCountArray.reduce((acc, curr) => acc + curr) 
+const bytesPerSec = byteCountArray => {
+    const totalBytes = byteCountArray.reduce((acc, curr) => acc + curr)
     const totalTime = timeArray[timeArray.length - 1] / 1000;
     return totalBytes / totalTime
 };
@@ -55,6 +55,7 @@ module.exports = () => {
     stream
         .pipe(transformStream)
         .pipe(summaryReport)
+        .on("finish", () => console.log(`\nAverage: ${bytesPerSec(byteCount)} bytes per second`))
         .pipe(process.stdout)
 }
 
