@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const fs = require('fs');
 const { Transform } = require('stream');
 
@@ -5,7 +7,7 @@ const chunkReport = () => {
     let startTime = Date.now();
 
     return new Transform({
-        writeableObjectMode: true,
+        readableObjectMode: true,
 
         transform(chunk, encoding, callback) {
             const lineCount = chunk.filter(byte => byte == 10).length;
@@ -14,7 +16,7 @@ const chunkReport = () => {
             const elapsedTime = endTime - startTime;
             startTime = endTime;
 
-            this.push(JSON.stringify({ lineCount, byteCount, elapsedTime }));
+            this.push({ lineCount, byteCount, elapsedTime });
             callback();
         }
     });
@@ -22,10 +24,10 @@ const chunkReport = () => {
 
 const summaryReport = () => {
     return new Transform({
-        readableObjectMode: true,
+        writableObjectMode: true,
 
         transform(chunk, encoding, callback) {
-            const { lineCount, byteCount, elapsedTime } = JSON.parse(chunk);
+            const { lineCount, byteCount, elapsedTime } = chunk;
             const throughputRate = parseFloat(byteCount / elapsedTime).toFixed(2);
 
             this.push(`Line count: ${lineCount}, Byte count: ${byteCount}, Elapsed time: ${elapsedTime} ms, Throughput rate: ${throughputRate} bytes/sec\n`);
@@ -34,7 +36,7 @@ const summaryReport = () => {
     });
 };
 
-const fileStream = fs.createReadStream('./big.file');
+const fileStream = process.stdin.isTTY ? fs.createReadStream(process.argv[2]) : process.stdin
 
 fileStream
     .pipe(chunkReport())
