@@ -10,8 +10,8 @@ let byteCount = [];
 let timeArray = [];
 
 
-const bytesPerSec = byteCountArray => { 
-    const totalBytes = byteCountArray.reduce((acc, curr) => acc + curr) 
+const bytesPerSec = byteCountArray => {
+    const totalBytes = byteCountArray.reduce((acc, curr) => acc + curr)
     const totalTime = timeArray[timeArray.length - 1] / 1000;
     return totalBytes / totalTime;
 };
@@ -51,11 +51,12 @@ const summaryReport = new Transform({
 // server.on('request', (req, res) => {
 module.exports = () => {
     startTime = Date.now();
-    const readableFile = fs.createReadStream('./big.file');
-    const rate = readableFile
-      .pipe(transformStream)
-      .pipe(summaryReport)
-      .on("finish", () => console.log(`${bytesPerSec(byteCount)} bytes per second`))
+    const stream = fs.createReadStream('./big.file');
+    stream
+        .pipe(transformStream)
+        .pipe(summaryReport)
+        .on("finish", () => console.log(`\nAverage: ${bytesPerSec(byteCount)} bytes per second`))
+        .pipe(process.stdout)
 }
 
 // server.listen(8000);
