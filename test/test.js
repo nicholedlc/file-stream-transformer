@@ -1,13 +1,13 @@
-import test from 'ava';
-const fs = require("fs");
-const { Readable } = require("stream");
-const chunkReport = require("./chunkReport");
-const summaryReport = require("./summaryReport");
-const textFileGenerator = require("./textFileGenerator");
-
+import test from "ava";
+import fs from "fs";
+import { Readable } from "stream";
+import chunkReport from "../src/chunkReport";
+import summaryReport from "../src/summaryReport";
+import textFileGenerator from "../src/textFileGenerator";
+import path from "path";
 
 test.cb('chunkReport', t => {
-    const filePath = "./a.file";
+    const filePath = path.join(__dirname, "a.file");
     const unitOfText =
         "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n";
     const bytesPerText = Buffer.from(unitOfText, 'utf-8').length;
@@ -27,8 +27,8 @@ test.cb('chunkReport', t => {
         })
         .on("finish", () => {
             t.is(actualBytes, totalBytes)
-            t.end();
-        })
+            fs.unlink(filePath, t.end)
+        });
 });
 
 test.cb('summaryReport', t => {

@@ -2,7 +2,7 @@
   "name": "test",
   "version": "1.0.0",
   "description": "",
-  "main": "streamReporter.js",
+  "main": "index.js",
   "scripts": {
     "test": "ava"
   },
@@ -18,5 +18,10 @@
   "homepage": "https://github.com/nicholedlc/node-test#readme",
   "dependencies": {
     "ava": "^0.25.0"
+  },
+  "ava": {
+    "files": [
+      "test/*.js"
+    ]
   }
 }
