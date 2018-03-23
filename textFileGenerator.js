@@ -1,7 +1,8 @@
 const fs = require('fs');
-const file = fs.createWriteStream('./a.file');
 
-const buildText = (text, num) => {
+const buildText = (text, num, filepath) => {
+    const file = fs.createWriteStream(filepath);
+
     for (let i = num; i > 0; i--) {
         file.write(text);
     }
